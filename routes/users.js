@@ -74,6 +74,18 @@ users.post('/login', (req, res) => {
     })
 })
 
+users.get('/:user_id', (req, res) => {
+    User.findOne({
+        _id: req.params.user_id
+    })
+    .then(user => {
+        res.send(user);
+    })
+    .catch(err => {
+        res.send('error: ' + err)
+    })
+})
+
 users.get('/profile', (req, res) => {
     var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
     User.findOne({

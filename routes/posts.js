@@ -22,9 +22,19 @@ router.get('/:postId', async (req, res) => {
     }
 });
 
+router.get('/individual/:user_id', async (req, res) => {
+    try {
+        var query = { user_id: req.params.user_id };
+        const posts = await Post.find(query);
+        res.json(posts);
+    } catch {
+        res.json({message: err});
+    }
+});
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads')
+        cb(null, 'uploads/product')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname )
@@ -46,6 +56,7 @@ router.post('/upload', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const post = new Post({
+        user_id: req.body.user_id,
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
@@ -63,7 +74,7 @@ router.delete('/:postId', async (req, res) => {
     try {
         const img_arr = req.body;
         for (var i = 0; i < img_arr.length; i++ ) {
-            const path = './uploads/'+img_arr[i]
+            const path = './uploads/product/'+img_arr[i]
             fs.unlink(path, (err) => {
                 if (err) {
                   console.error(err)
