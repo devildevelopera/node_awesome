@@ -1,8 +1,8 @@
 //Set up mongoose connection
 const mongoose = require('mongoose');
-const mongoDB = 'mongodb://localhost/awesome';
+const mongoDB = 'mongodb://localhost/mydb';
 mongoose.set('useCreateIndex', true);
-mongoose.connect(mongoDB, { 
+mongoose.connect(mongoDB, {
     user: "",
     pass: "",
     useUnifiedTopology: true,

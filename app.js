@@ -6,15 +6,21 @@ const mongoose = require('./config/database.js');
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+  }));
 
 const postsRoute = require('./routes/posts');
+const usersRoute = require('./routes/users')
 
 app.use('/uploads', express.static('uploads'));
 
 app.use('/posts', postsRoute);
+app.use('/users', usersRoute)
 
 app.get('/', (req, res) => {
     res.send('We are on home');
 });
 
-app.listen(3005);
+const port = process.env.PORT || 3005
+app.listen(port);
