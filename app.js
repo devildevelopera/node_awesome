@@ -10,14 +10,13 @@ var io = require('socket.io')(http);
 
 io.on('connection', function(client) {
   var online = Object.keys(io.engine.clients);
-  // console.log(online);
-  io.emit('server message', JSON.stringify(online));
+  client.emit('server message', JSON.stringify(online));
 
-  // client.on('subscribeToTimer', (interval) => {
-  //   setInterval(() => {
-  //     client.emit('timer', new Date());
-  //   }, interval);
-  // });
+  client.on('subscribeToTimer', (interval) => {
+    setInterval(() => {
+      client.emit('timer', new Date());
+    }, interval);
+  });
 
   client.on('disconnect', function(){
     var online = Object.keys(io.engine.clients);
