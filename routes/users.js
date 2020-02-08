@@ -101,4 +101,21 @@ users.get('/profile', (req, res) => {
         res.send('error: ' + err)
     })
 })
+
+users.post('/forgotpass', (req, res) => {
+    console.log(req.body.email);
+    User.findOne({
+        email: req.body.email
+    })
+    .then(user => {
+        if(user) {
+            res.send('success');
+        }else{
+            res.send(false)
+        }
+    })
+    .catch(err => {
+        res.send('error: ' + err)
+    })
+})
 module.exports = users
