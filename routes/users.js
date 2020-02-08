@@ -5,7 +5,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const User = require('../models/User')
+const User = require('../models/User');
 
 users.use(cors());
 
@@ -62,7 +62,7 @@ users.post('/login', (req, res) => {
                 })
                 res.send(token)
             }else{
-                res.send(false)
+                res.send(false);
             }
         }else{
             res.send(false)
@@ -71,7 +71,7 @@ users.post('/login', (req, res) => {
     .catch(err => {
         res.send('error: ' + err)
     })
-})
+});
 
 users.get('/:user_id', (req, res) => {
     User.findOne({

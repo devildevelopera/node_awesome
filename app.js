@@ -12,22 +12,6 @@ let server = app.listen(port, function(){
 
 var io = require('socket.io')(server);
 
-io.on('connection', function(client) {
-  var online = Object.keys(io.engine.clients);
-  client.emit('server message', JSON.stringify(online));
-
-  client.on('subscribeToTimer', (interval) => {
-    setInterval(() => {
-      client.emit('timer', new Date());
-    }, interval);
-  });
-
-  client.on('disconnect', function(){
-    var online = Object.keys(io.engine.clients);
-    io.emit('server message', JSON.stringify(online));
-    });
-});
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -40,6 +24,29 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/posts', postsRoute);
 app.use('/users', usersRoute);
+
+onlineUsers = {};
+
+io.on('connection', function(socket) {
+  socket.on('client message', function(user_id){
+    onlineUsers[socket.id] = user_id;
+    io.emit('server message', onlineUsers);
+  })
+  socket.on('disconnect', function(){
+    io.emit('server message', socket.id);
+    delete onlineUsers[socket.id];
+    });
+});
+
+app.delete('/users/logout/:user_id', (req, res) => {
+  var user_id = req.params.user_id
+  for(var key in onlineUsers) {
+    if(onlineUsers[key] == user_id) {
+        delete onlineUsers[key];
+    }
+  }
+  io.emit('server message', onlineUsers);
+})
 
 app.get('/', (req, res) => {
     res.send('We are on home');
