@@ -4,7 +4,7 @@ const users = express.Router();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+var contactContoller = require('../controller/email');
 const User = require('../models/User');
 
 users.use(cors());
@@ -103,13 +103,13 @@ users.get('/profile', (req, res) => {
 })
 
 users.post('/forgotpass', (req, res) => {
-    console.log(req.body.email);
     User.findOne({
         email: req.body.email
     })
     .then(user => {
         if(user) {
-            res.send('success');
+            // contactContoller.sendemail();
+            res.send(user._id);
         }else{
             res.send(false)
         }
@@ -118,4 +118,22 @@ users.post('/forgotpass', (req, res) => {
         res.send('error: ' + err)
     })
 })
+
+users.patch('/resetpass/:user_id', (req, res) => {
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+        User.updateOne(
+            { _id: req.params.user_id},
+            { $set: {
+                    password: hash,
+                } }
+        )
+        .then(() => {
+            res.send('success');
+        })
+        .catch((err) => {
+            res.send(false);
+        })
+    });
+})
+
 module.exports = users
