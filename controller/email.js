@@ -1,29 +1,25 @@
 exports.sendemail = async () => {
-    console.log('started sending email...');
     var nodemailer = require('nodemailer');
     var transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
+        service: 'gmail',
         auth: {
-            user: 'baymax.development@gmail.com',
-            pass: 'sbaetyffyhzjscgk'
-        },
-        tls: {
-            rejectUnauthorized: false
+            user: 'miguel.hoffman.dev519@gmail.com',
+            pass: 'ddfjynwrhyvcdfox'
         }
     });
-    const mailOptions = {
-        from: 'miguel.hoffman.dev519@gmail.com',
-        to: 'miclelee19951025@gmail.com',
-        subject: 'Contact Me',
-        html: 'Hello World'
-    };
-    transporter.sendMail(mailOptions, function (err, info) {
-        if (err)
-            console.log(err);
 
-        else
-            console.log(info);
+    var mailOptions = {
+        from: 'miguel.hoffman.dev519@gmail.com',
+        to: 'miguelhoffmannsmart@gmail.com',
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
     });
 }
