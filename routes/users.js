@@ -108,8 +108,10 @@ users.post('/forgotpass', (req, res) => {
     })
     .then(user => {
         if(user) {
-            // contactContoller.sendemail();
-            res.send(user._id);
+            user_id = JSON.stringify(user._id);
+            let encodedID = Buffer.from(user_id).toString('base64');
+            // contactContoller.sendemail(encodedID);
+            res.send("success");
         }else{
             res.send(false)
         }
@@ -120,9 +122,10 @@ users.post('/forgotpass', (req, res) => {
 })
 
 users.patch('/resetpass/:user_id', (req, res) => {
+    let decodedID = Buffer.from(req.params.user_id, 'base64').toString('ascii');
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         User.updateOne(
-            { _id: req.params.user_id},
+            { _id: JSON.parse(decodedID)},
             { $set: {
                     password: hash,
                 } }

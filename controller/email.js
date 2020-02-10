@@ -1,4 +1,4 @@
-exports.sendemail = async () => {
+exports.sendemail = async (user_id) => {
     var nodemailer = require('nodemailer');
     var transporter = nodemailer.createTransport({
         service: 'gmail',
