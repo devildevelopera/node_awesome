@@ -112,7 +112,7 @@ router.patch('/withimages/:postId', async (req, res) => {
             const path = './uploads/product/'+previous_img_arr[i]
             fs.unlink(path, (err) => {
                 if (err) {
-                  console.error(err)
+                  console.error(err);
                   return
                 }
               })

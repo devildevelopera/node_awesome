@@ -1,5 +1,6 @@
 const express = require('express');
-
+var multer = require('multer');
+var fs = require('fs');
 const users = express.Router();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -85,23 +86,6 @@ users.get('/:user_id', (req, res) => {
     })
 })
 
-users.get('/profile', (req, res) => {
-    var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
-    User.findOne({
-        _id: decoded._id
-    })
-    .then(user => {
-        if(user) {
-            res.json(user)
-        }else{
-            res.send("User does not exist")
-        }
-    })
-    .catch(err => {
-        res.send('error: ' + err)
-    })
-})
-
 users.post('/forgotpass', (req, res) => {
     User.findOne({
         email: req.body.email
@@ -137,6 +121,121 @@ users.patch('/resetpass/:user_id', (req, res) => {
             res.send(false);
         })
     });
+})
+
+users.patch('/updatepass/:user_id', (req, res) => {
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+        User.updateOne(
+            { _id: req.params.user_id},
+            { $set: {
+                    password: hash,
+                } }
+        )
+        .then(() => {
+            res.send('success');
+        })
+        .catch((err) => {
+            res.send(false);
+        })
+    });
+})
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/profile')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname )
+    }
+});
+
+var upload = multer({ storage: storage }).single('file');
+
+users.post('/upload/:user_id', async (req, res) => {
+    User.findOne({
+        _id: req.params.user_id
+    })
+    .then(user => {
+        if(user.photo !=="seller.png") {
+            const path = './uploads/profile/'+user.photo;
+            fs.unlink(path, (err) => {
+                if (err) {
+                console.error(err);
+                return
+                }
+            })
+        }
+    })
+    upload(req, res, function (err) {
+           if (err instanceof multer.MulterError) {
+               return res.status(500).json(err)
+           } else if (err) {
+               return res.status(500).json(err)
+           }
+      return res.status(200).send(req.file)
+    });
+});
+
+users.patch('/:user_id', async (req, res) => {
+    try {
+        const updatePost = await User.updateOne(
+            { _id: req.params.user_id},
+            { $set: {
+                    photo: req.body.filename
+                } }
+        );
+        res.json(updatePost);
+    } catch (err) {
+        res.json({message: err});
+    }
+})
+
+users.delete('/removePhoto/:user_id', async (req, res) => {
+    User.findOne({
+        _id: req.params.user_id
+    })
+    .then(user => {
+        if(user.photo !=="seller.png") {
+            const path = './uploads/profile/'+user.photo;
+            fs.unlink(path, (err) => {
+                if (err) {
+                  console.error(err);
+                  return
+                }
+            })
+        }
+    })
+    try {
+        const updatePost = await User.updateOne(
+            { _id: req.params.user_id},
+            { $set: {
+                    photo: "seller.png"
+                } }
+        );
+        res.json(updatePost);
+    } catch (err) {
+        res.json({message: err});
+    }
+})
+
+users.patch('/userUpdate/:user_id', async (req, res) => {
+    console.log(req.body)
+    try {
+        const updatePost = await User.updateOne(
+            { _id: req.params.user_id},
+            { $set: {
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    email: req.body.email,
+                    phone: req.body.phone,
+                    country: req.body.country,
+                    city: req.body.city
+                } }
+        );
+        res.json(updatePost);
+    } catch (err) {
+        res.json({message: err});
+    }
 })
 
 module.exports = users

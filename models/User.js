@@ -9,9 +9,25 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    photo: {
+        type: String,
+        default: "seller.png"
+    },
     email: {
         type: String,
         required: true
+    },
+    phone: {
+        type: String,
+        default: ''
+    },
+    country: {
+        type: String,
+        default: ''
+    },
+    city: {
+        type: String,
+        default: ''
     },
     password: {
         type: String,
