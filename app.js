@@ -58,6 +58,5 @@ app.get('/getCities/:cityName', (req, res) => {
   let jsonData = cities.filter(city => {
     return city.name.match(req.params.cityName);
   })
-  console.log(jsonData);
   res.send(jsonData);
 })
