@@ -51,3 +51,13 @@ app.delete('/users/logout/:user_id', (req, res) => {
 app.get('/', (req, res) => {
     res.send('We are on home');
 });
+
+const cities = require("all-the-cities");
+
+app.get('/getCities/:cityName', (req, res) => {
+  let jsonData = cities.filter(city => {
+    return city.name.match(req.params.cityName);
+  })
+  console.log(jsonData);
+  res.send(jsonData);
+})
