@@ -9,6 +9,10 @@ const PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true
@@ -17,9 +21,17 @@ const PostSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+        required: true
+    },
     img_arr: {
         type: Array,
         required: true
+    },
+    active: {
+        type: Boolean,
+        default: true
     },
     date: {
         type: Date,

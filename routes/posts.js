@@ -58,8 +58,10 @@ router.post('/', async (req, res) => {
     const post = new Post({
         user_id: req.body.user_id,
         name: req.body.name,
+        category: req.body.category,
         description: req.body.description,
         price: req.body.price,
+        quantity: req.body.quantity,
         img_arr: req.body.img_arr
     });
     try {
@@ -95,8 +97,24 @@ router.patch('/:postId', async (req, res) => {
             { _id: req.params.postId},
             { $set: {
                     name: req.body.name,
+                    category: req.body.category,
                     description: req.body.description,
-                    price: req.body.price
+                    price: req.body.price,
+                    quantity: req.body.quantity
+                } }
+        );
+        res.json(updatePost);
+    } catch (err) {
+        res.json({message: err});
+    }
+});
+
+router.patch('/activetoggle/:postId/:inactive', async (req, res) => {
+    try {
+        const updatePost = await Post.updateOne(
+            { _id: req.params.postId},
+            { $set: {
+                    active: req.params.inactive
                 } }
         );
         res.json(updatePost);
@@ -121,8 +139,10 @@ router.patch('/withimages/:postId', async (req, res) => {
             { _id: req.params.postId},
             { $set: {
                     name: req.body.name,
+                    category: req.body.category,
                     description: req.body.description,
                     price: req.body.price,
+                    quantity: req.body.quantity,
                     img_arr: req.body.img_arr
                 } }
         );
