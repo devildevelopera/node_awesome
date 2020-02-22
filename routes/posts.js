@@ -32,6 +32,16 @@ router.get('/individual/:user_id', async (req, res) => {
     }
 });
 
+router.get('/category/:categoryID', async (req, res) => {
+    try {
+        var query = { category: req.params.categoryID };
+        const posts = await Post.find(query);
+        res.json(posts);
+    } catch {
+        res.json({message: err});
+    }
+});
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/product')
