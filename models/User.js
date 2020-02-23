@@ -29,6 +29,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    pcode: {
+        type: String,
+        default: ''
+    },
     password: {
         type: String,
         required: true

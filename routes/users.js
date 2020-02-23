@@ -219,6 +219,7 @@ users.delete('/removePhoto/:user_id', async (req, res) => {
 })
 
 users.patch('/userUpdate/:user_id', async (req, res) => {
+    console.log(req.body)
     try {
         const updatePost = await User.updateOne(
             { _id: req.params.user_id},
@@ -228,7 +229,8 @@ users.patch('/userUpdate/:user_id', async (req, res) => {
                     email: req.body.email,
                     phone: req.body.phone,
                     country: req.body.country,
-                    city: req.body.city
+                    city: req.body.city,
+                    pcode: req.body.pcode
                 } }
         );
         res.json(updatePost);
